@@ -1,70 +1,46 @@
-document.body.innerHTML=`
-<div class="container-fluid">
-<h1>Here You Can Know The Nationality Of The Name🧔</h1><br>
-<input type="text" id="searchtext" placeholder=" Enter the name" size="50">
-<input type="button" value="Search" id="btn" class="btn btn-primary">
-<input type="button" value="Reset" id="resetbtn" class="btn btn-danger">
-</div><br><br>
-<div class=" container-fluid result">
-<h4> Name Related Top Two Countries And Their Probabilities Are</h4><br>
-<h4 id=result></h4><br><br>
-</div>`
 
-let search_text=document.querySelector("#searchtext");
-let result_data=document.querySelector("#result");
-let search_btn=document.querySelector("#btn");
- let reset_btn=document.querySelector("#resetbtn");
+var res = fetch("https://restcountries.com/v2/all");
 
-search_btn.addEventListener("click", async ()=>{
-    let value=document.getElementById("searchtext").value;
-    document.querySelector('.result').style.display="block"
-    
-//if given value is zero or empty then it will display the alert
-    if(value.length==0||value.includes(" ")){
-         alert("Please enter the valid name without any spaces");
+res.then((data)=>data.json()).then((data1)=>{
+    for (let i=0; i<data1.length; i++){
+        var div = document.createElement("div");
 
+        div.innerHTML = ` <div class="row">
+        <div class="cols-3 card-column">
+        <div class="card" style="width: 100rem">
+        <div class="card-body ">
+          <h5 class="card-title">Country Name : ${data1[i].name}</h5>
+          <img src = "${data1[i].flag}" height="50%" width=50%>
+          <h5 class="card-titl">Capital : ${data1[i].capital} </h5>
+          <h5 class="card-tit">Regiion : ${data1[i].region} </h5>
+          <h5 class="card-ti">Country Code : ${data1[i].alpha3Code}</h5>
+          <button onClick="block(name)">button</button>      
+          </div>
+          </div>
+        </div>
+      </div>`;
+        document.body.append(div);
     }
-    //fetch the data from url
-    else {
-      
-        try{
-            let data=await fetch(`https://api.nationalize.io/?name=${value}`);
-           let result= await data.json();
-           console.log(result);
-           result_data.innerHTML="";
-           
-           for(let i=0;i<2;i++){
-          result_data.innerHTML+=
-             `
-             <div class="container">
-               <div class="card">
-                 <div class="card-header">
-                  <div class="card-title">TOP-${i+1}</div>
-                  
-                 </div>
-                 <div class="card-body">
 
-                 Country_id:${result.country[i].country_id}<br>
-                 Probability :${result.country[i].probability}<br><br>
-
-                 </div>
-               </div>
-             </div>
-               `
-           }
-           
-        }
-        catch{
-            console.log(error);
-        }
-        
-    }
+   
 });
 
-var container_data = document.querySelector('.card');
-reset_btn.addEventListener("click",()=>{
-document.querySelector('.result').style.display="none";
-search_text.value="";
-result_data.innerHTML=" ";
+function block(name){
 
-});
+  var WAPI = `  https://api.openweathermap.org/data/2.5/weather?q=name&appid=fd589e28fc3b4a1edb70eb06503be786
+  `
+
+  console.log(name);
+ fetch(WAPI)
+ .then((response) => response.json())
+ .then((data)=> {
+
+     alert(`
+               
+     Current Humidity is ${data.main.humidity}
+     Current Pressure is ${data.main.pressure}
+     Current Temperature is ${data.main.temp}`)
+    })
+}
+  
+document.addEventListener("click",(event) => event.preventDefault());
